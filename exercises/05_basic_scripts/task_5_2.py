@@ -24,3 +24,25 @@ Out[1]: '11111111111111111111111111110000'
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 """
+ipaddr_prefix=input("Enter ip address and prefix (format is x.x.x.x/xx): ")
+ip, mask=ipaddr_prefix.split('/')
+ip_list=ip.split('.')
+mask=int(mask)
+bin_mask=("1"*mask)+("0"*(32-mask))
+out_ip="""
+    Network:
+    {0:8} {1:8} {2:8} {3:8}
+    {0:08b} {1:08b} {2:08b} {3:08b}
+"""
+out_mask="""
+    Mask:
+    {4}
+     {0:8} {1:8} {2:8} {3:8}
+    {0:08b} {1:08b} {2:08b} {3:08b}
+"""
+oct1=int(bin_mask[0:8],2)
+oct2=int(bin_mask[8:16],2)
+oct3=int(bin_mask[16:24],2)
+oct4=int(bin_mask[24:],2)
+print(out_ip.format(int(ip_list[0]), int(ip_list[1]), int(ip_list[2]), int(ip_list[3])))
+print(out_mask.format(oct1, oct2, oct3, oct4, mask))

@@ -46,3 +46,5 @@ london_co = {
         "routing": True,
     },
 }
+hostname=input("Enter hostname: ")
+print(london_co[hostname])

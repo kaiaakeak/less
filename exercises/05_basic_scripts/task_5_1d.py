@@ -43,3 +43,7 @@ london_co = {
         "routing": True,
     },
 }
+hostname=input('Enter hostname:\n')
+par=input('Enter interesting parametr: '+','.join((list(london_co[hostname].keys()))).replace(',', ', ')+"\n")
+param=par.lower()
+print('\n'+'-'*30+'\n'+london_co[hostname].get(param, 'параметра нет'))
