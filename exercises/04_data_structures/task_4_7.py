@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Задание 4.7
+print('{:b}'.format(int(mac.replace(":", ""),16)))
 
 Преобразовать MAC-адрес в строке mac в двоичную строку такого вида:
 '101010101010101010111011101110111100110011001100'
@@ -16,4 +17,4 @@
 """
 
 mac = "AAAA:BBBB:CCCC"
-print('{:b}'.format(int(mac.replace(":", ""),16)))
+print('{:b}'.format(int(mac.replace(':',''),16)))
