@@ -34,3 +34,12 @@ data = [
     ("R2", "15.2(2)T1", "Cisco 2911"),
     ("SW1", "12.2(55)SE9", "Cisco WS-C2960-8TC-L"),
 ]
+
+def convert_to_dict(head, d):
+    lst_test=[]
+    for d1 in d:
+        lst_test.append(dict(zip(head,d1)))
+    return lst_test
+
+if __name__ == "__main__":
+    print(convert_to_dict(headers, data))

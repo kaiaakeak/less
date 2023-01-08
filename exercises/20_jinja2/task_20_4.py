@@ -29,6 +29,44 @@ interface Gi0/10
 Проверьте шаблон templates/add_vlan_to_switch.txt на данных
 в файле data_files/add_vlan_to_switch.yaml, с помощью функции generate_config
 из задания 20.1.
-Не копируйте код функции generate_config.
+vlan_id: 10
 
+name: Marketing
+access:
+  - Fa0/1
+trunk:
+  - Fa0/23
+  - Fa0/24
+
+Не копируйте код функции generate_config.
+"""
+import yaml
+
+
+from task_20_1 import generate_config
+
+with open ("data_files/add_vlan_to_switch.yaml") as f:
+    data = yaml.safe_load(f)
+
+#print(data)
+print (generate_config("templates/add_vlan_to_switch.txt", data))
+
+"""
+vlan {{vlan_id}}
+ name {{name}}
+{% if access %}
+{% for intf in access %}
+interface intf
+ switchport mode access
+ switchport access vlan {{vlan_id}}
+{% endfor %}
+{% endif %}
+
+{% if trunk %}
+{% for intf in trunk %}
+interface intf
+ switchport trunk allowed vlan add {{vlan id}}
+ switchport mode trunk
+{% endfor %}
+{% endif %}
 """

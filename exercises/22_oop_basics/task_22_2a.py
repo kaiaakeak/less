@@ -3,7 +3,7 @@
 """
 Задание 22.2a
 
-Скопировать класс CiscoTelnet из задания 22.2 и изменить
+Скопировать клас-с CiscoTelnet из задания 22.2 и изменить
 метод send_show_command добавив три параметра:
 
 * parse - контролирует то, будет возвращаться обычный вывод команды или список словарей,
@@ -50,3 +50,52 @@ up      \r\nEthernet0/1                192.168.200.1   YES NVRAM  up...'
 
 
 """
+import telnetlib
+import time
+from pprint import pprint
+from textfsm import clitable
+
+
+class CiscoTelnet:
+    def __init__(self, **params_dict):
+        self.ip = params_dict['ip']
+        self.username = params_dict['username']
+        self.password = params_dict['password']
+        self.secret = params_dict['secret']
+        self.telnet = telnetlib.Telnet(self.ip)
+        self.telnet.read_until(b"Username")
+        self. _write_line(self.username)
+        self.telnet.read_until(b"Password")
+        self._write_line(self.password)
+        self.telnet.read_until(b">", timeout=5)
+        self._write_line('enable\n')
+        self.telnet.read_until(b"Password")
+        self._write_line(self.secret)
+        self.telnet.read_until(b"#", timeout=5)
+
+    def _write_line(self, cmd_line):
+        return self.telnet.write(cmd_line.encode("ascii") + b"\n")
+
+    def send_show_command(self, show, parse=True, templates='templates', index='index'):
+        self._write_line(show)
+        output = self.telnet.read_until(b"#", timeout=5).decode("utf-8")
+        if parse:
+            cli_table = clitable.CliTable(index, templates)
+            attributes = {'Command': show, 'Vendor':'cisco_ios'}
+            cli_table.ParseCmd(output,attributes)
+            data_rows = [list(row) for row in cli_table]
+            result = [dict(zip(list(cli_table.header), row)) for row in data_rows]
+            return result
+        else:
+            return output
+
+if __name__ == "__main__":
+    r1_params = {
+    'ip': '192.168.100.1',
+    'username': 'cisco',
+    'password': 'cisco',
+    'secret': 'cisco'}
+    commands = ["sh ip int br", "sh int desc", "sh ver"]
+    r1 = CiscoTelnet(**r1_params)
+    for cmd in commands:
+        print(r1.send_show_command(cmd))

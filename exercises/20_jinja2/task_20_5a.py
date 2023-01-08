@@ -37,6 +37,31 @@
 интерфейсов, но при этом не проверяет настроенные номера тунелей и другие команды.
 Они должны быть, но тест упрощен, чтобы было больше свободы выполнения.
 """
+import yaml
+from pprint import pprint
+
+from send_commands import send_commands
+from task_20_1 import generate_config
+
+def configure_vpn(src_device_params, dst_device_params, src_template, dst_template, vpn_data_dict):
+    #cfg_src = generate_config(src_template, vpn_data_dict)
+    #cfg_dst = generate_config(dst_template, vpn_data_dict)
+    tu_src = (send_commands(src_device_params, show='sh int des | i Tu'))
+    tu_dst = (send_commands(dst_device_params, show='sh int des | i Tu'))
+    data_src, data_dst = vpn_data_dict, vpn_data_dict
+
+    if tu_src:
+         tu_n_src = re.findall(r'Tu(\d+).*', tu_src)
+    else:
+        tu_n_src = None
+    commands = {
+    src_device_params['host'] : {'command' : generate_config(src_template, vpn_data_dict)},
+    dst_device_params['host'] : {'command' : generate_config(dst_template, vpn_data_dict)}}
+    print(send_commands(src_device_params, config=commands[src_device_params['host']]['command']))
+    print(send_commands(dst_device_params, config=commands[dst_device_params['host']]['command']))
+    return commands[src_device_params['host']]['command'] , commands[dst_device_params['host']]['command']
+
+
 
 data = {
     "tun_num": None,
@@ -45,3 +70,9 @@ data = {
     "tun_ip_1": "10.0.1.1 255.255.255.252",
     "tun_ip_2": "10.0.1.2 255.255.255.252",
 }
+
+
+if __name__ == "__main__":
+    with open ("devices.yaml") as f:
+        devices = yaml.safe_load(f)
+    pprint (configure_vpn(devices[0], devices[1], "./templates/gre_ipsec_vpn_1.txt", "./templates/gre_ipsec_vpn_2.txt", data))

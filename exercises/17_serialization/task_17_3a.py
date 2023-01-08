@@ -36,3 +36,36 @@
 в файл topology.yaml. Он понадобится в следующем задании.
 
 """
+import re
+import glob
+import yaml
+from pprint import pprint
+
+def generate_topology_from_cdp(list_of_files, save_to_filename=None):
+    test={}
+    regex = re.compile(
+        r'^(?P<device_neigh>\w+\d)\s+'
+        r'(?P<l_intf>\S+\s+\d{1,2}/\d{1,2}).*?'
+        r'(?P<n_intf>\S+\s+\d{1,2}/\d{1,2}).*?'
+        , re.DOTALL|re.MULTILINE
+        )
+
+
+    for file in list_of_files:
+        with open(file) as f:
+            hostname = file.replace('_', ' ').replace('.txt', '').split()[-1].upper()
+            match = regex.finditer(f.read())
+            test[hostname] = {m.group('l_intf') : {m.group('device_neigh'):m.group('n_intf')} for m in match}
+
+    if not save_to_filename is None:
+        with open(save_to_filename, 'w') as fl:
+            yaml.dump(test, fl, default_flow_style=False)
+
+    return test
+
+
+sh_cdp_neighbors = glob.glob('sh_cdp_n*')
+#sh_cdp_neighbors = ['sh_cdp_n_r1.txt']
+
+if __name__ == "__main__":
+    pprint(generate_topology_from_cdp(sh_cdp_neighbors, 'test.yaml'))

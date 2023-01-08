@@ -20,3 +20,9 @@
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 
 """
+out="{:8} {:18} {:8}"
+with open('CAM_table.txt') as f:
+    for line in f:
+        if 'Gi' in line:
+            line = line.split()
+            print(out.format(line[0], line[1], line[-1]))

@@ -44,6 +44,19 @@ def parse_cdp_neighbors(command_output):
     Плюс учимся работать с таким выводом.
     """
 
+    #list_temp=[]
+    dict_for_return={}
+    for str_cfg in command_output.split('\n'):
+        if '>show' in str_cfg:
+            local_device = str_cfg.replace('>', ' ').split()[0]
+        elif str_cfg and str_cfg[-1].isdigit():
+            device_neigh, type_locintf, local_intf, *_, type_intf, intf = str_cfg.split()
+            tuple_local = local_device, type_locintf+local_intf
+            tuple_neigh = device_neigh, type_intf+intf
+            dict_for_return[tuple_local]=tuple_neigh
+    return(dict_for_return)
+
+
 
 if __name__ == "__main__":
     with open("sh_cdp_n_sw1.txt") as f:

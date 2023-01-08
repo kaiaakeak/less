@@ -51,5 +51,5 @@ london_co = {
     },
 }
 hostname=input('Enter hostname:\n')
-param=input('Enter interesting parametr: '+','.join((list(london_co[hostname].keys()))).replace(',', ', ')+"\n")
+param=input('Enter interesting parametr: '+','.join((list(london_co[hostname].keys()))).replace(',', ', ')+'\n')
 print('\n'+'-'*30+'\n'+london_co[hostname][param])

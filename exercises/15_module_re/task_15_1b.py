@@ -28,3 +28,16 @@ IP-адреса, диапазоны адресов и так далее, так 
 а не ввод пользователя.
 
 """
+import re
+from pprint import pprint
+
+with open('config_r2.txt') as f:
+    match = re.finditer(
+        r'interface (\S+\d{1,3}(/\d{1,3})?)\n'
+        r'( .*\n)*'
+        r' ip address (\S+) (\S+)',
+        f.read()
+        )
+    result = {}
+
+    for m in match:

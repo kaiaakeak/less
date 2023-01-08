@@ -32,6 +32,15 @@ Out[3]:
  ('R3', 'Eth0/2'): ('R5', 'Eth0/0')}
 
 """
+class Topology:
+    def __init__(self, dict_topology):
+        topology = {}
+        for link_l, link_r in dict_topology.items():
+            if not link_r in topology:
+                topology[link_l] = {}
+                topology[link_l] = link_r
+        self.topology = topology
+
 
 topology_example = {
     ("R1", "Eth0/0"): ("SW1", "Eth0/1"),
@@ -44,3 +53,6 @@ topology_example = {
     ("SW1", "Eth0/2"): ("R2", "Eth0/0"),
     ("SW1", "Eth0/3"): ("R3", "Eth0/0"),
 }
+
+top = Topology(topology_example)
+print(top.topology)

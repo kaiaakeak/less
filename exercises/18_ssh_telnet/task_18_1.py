@@ -18,7 +18,14 @@
 
 """
 import yaml
+from netmiko import ConnectHandler, NetmikoTimeoutException
 
+
+def send_show_command(device, command):
+    with ConnectHandler(**device) as ssh:
+        ssh.enable()
+        result = ssh.send_command(command)
+        return result
 
 
 if __name__ == "__main__":

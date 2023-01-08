@@ -12,3 +12,15 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 """
+ip=input("Enter Ip addr: ")     # query ip address
+byte1=int(ip.split('.')[0])     # define first byte
+if byte1 <=223 and byte1 !=0:
+    print('unicast')
+elif byte1 >= 224 and byte1 <= 239 and byte1 != 0:
+    print('multicast')
+elif ip == "255.255.255.255":
+    print('local broadcast')
+elif ip == "0.0.0.0":
+    print('unassigned')
+else:
+    print('unused')

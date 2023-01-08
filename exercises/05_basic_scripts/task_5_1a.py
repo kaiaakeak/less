@@ -44,7 +44,6 @@ london_co = {
         "routing": True,
     },
 }
-hostname=input("Enter hostname: ")
-temp_list=list(london_co[hostname].keys())
-h_a=input("Enter the above parametr",str(temp_list)
-print(london_co[hostname][h_a])
+hostname = input("Enter device hostname: ")
+parameters = input("Enter the parameters of interest: ")
+print(london_co[hostname][parameters]) 

@@ -23,3 +23,16 @@
 а не ввод пользователя.
 
 """
+import re
+
+def get_ip_from_cfg (config_filename):
+    final_lst=list()
+    regex = (r' ip address (?P<ip>\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s'
+            r'(?P<mask>255.\d{1,3}.\d{1,3}.\d{1,3})')
+
+    with open(config_filename) as config:
+        for line in config:
+            match = re.match(regex, line)
+            if match:
+                final_lst.append(match.group('ip', 'mask'))
+        return(final_lst)

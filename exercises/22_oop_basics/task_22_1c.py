@@ -36,6 +36,30 @@ In [5]: t.delete_node('SW1')
 
 """
 
+class Topology:
+    def __init__(self, topology_dict):
+        self.topology = self._normalize(topology_dict)
+
+    def _normalize(self, topology_dict):
+        return {min(local, remote) : max(local, remote) for local, remote in topology_dict.items()}
+
+    def delete_link(self, link1, link2):
+        if link1 in self.topology and self.topology[link1] == link2:
+            del self.topology[link1]
+        elif link2 in self.topology and self.topology[link2] == link1:
+            del self.topology[link2]
+        else:
+            print('Такого соединения нет')
+
+    def delete_node(self, node):
+       temp_k = [l for l, r in self.topology.items() if node in (l+r)]
+       if temp_k:
+           for k in temp_k:
+               del self.topology[k]
+       else:
+           print('Такого устройства нет')
+
+
 topology_example = {
     ("R1", "Eth0/0"): ("SW1", "Eth0/1"),
     ("R2", "Eth0/0"): ("SW1", "Eth0/2"),

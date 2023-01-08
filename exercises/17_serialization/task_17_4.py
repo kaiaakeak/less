@@ -40,9 +40,9 @@ C-3PO,c3po@gmail.com,16/12/2019 17:24
 Функции convert_str_to_datetime и convert_datetime_to_str использовать не обязательно.
 
 """
-
+from pprint import pprint
 import datetime
-
+import csv
 
 def convert_str_to_datetime(datetime_str):
     """
@@ -56,3 +56,28 @@ def convert_datetime_to_str(datetime_obj):
     Конвертирует строку с датой в формате 11/10/2019 14:05 в объект datetime.
     """
     return datetime.datetime.strftime(datetime_obj, "%d/%m/%Y %H:%M")
+
+def write_last_log_to_csv(source_log, output): #
+    final_dict={}
+    final_list=[]
+    with open(source_log) as f:
+        reader = list(csv.reader(f))
+
+    for name, email, last_upd in reader[1:]:
+        if email in final_dict:
+            if convert_str_to_datetime(last_upd) > convert_str_to_datetime(final_dict[email][-1]):
+                final_dict[email] = [name, last_upd]
+        else:
+            final_dict[email] = [name, last_upd]
+
+    for email, name_lastdate in final_dict.items():
+        final_list.append([name_lastdate[0], email, name_lastdate[-1]])
+    final_list.insert(0, reader[0])
+    with open(output, 'w') as out:
+        writer = csv.writer(out)
+        for row in final_list:
+            writer.writerow(row)
+
+
+if __name__ == "__main__":
+    pprint(write_last_log_to_csv('mail_log.csv', 'test_write_last_log_to_csv.csv'))#

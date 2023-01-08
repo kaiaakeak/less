@@ -22,3 +22,22 @@ interface Loopback0
 
 Проверить работу функции на примере файла config_r1.txt.
 """
+import re
+from pprint import pprint
+
+
+def get_ints_without_description(filename):
+    with open(filename) as f:
+        lst_without = list()
+        regex = (
+            r'interface (\w\S+\d)\n'
+            r'( .*\n)*'
+            )
+
+        for m in re.finditer(regex, f.read()):
+            if not 'description' in m.group(): # and not 'shutdown' in m.group() and not 'no ip add' in m.group()
+                lst_without.append(m.group(1))
+        return(lst_without)
+
+if __name__ == "__main__":
+    pprint(get_ints_without_description('config_r1.txt'))

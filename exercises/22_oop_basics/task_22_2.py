@@ -26,11 +26,11 @@
 In [2]: from task_22_2 import CiscoTelnet
 
 In [3]: r1_params = {
-   ...:     'ip': '192.168.100.1',
-   ...:     'username': 'cisco',
-   ...:     'password': 'cisco',
-   ...:     'secret': 'cisco'}
-   ...:
+     'ip': '192.168.100.1',
+     'username': 'cisco',
+     'password': 'cisco',
+     'secret': 'cisco'}
+
 
 In [4]: r1 = CiscoTelnet(**r1_params)
 
@@ -47,3 +47,44 @@ self._write_line(line)
 
 Он не должен делать ничего другого.
 """
+import telnetlib
+import time
+from pprint import pprint
+
+class CiscoTelnet:
+    def __init__(self, **params_dict):
+        self.ip = params_dict['ip']
+        self.username = params_dict['username']
+        self.password = params_dict['password']
+        self.secret = params_dict['secret']
+        self.telnet = telnetlib.Telnet(self.ip)
+        self.telnet.read_until(b"Username")
+        self. _write_line(self.username)
+        self.telnet.read_until(b"Password")
+        self._write_line(self.password)
+        self.telnet.read_until(b">", timeout=5)
+        self._write_line('enable\n')
+        self.telnet.read_until(b"Password")
+        self._write_line(self.secret)
+        self.telnet.read_until(b"#", timeout=5)
+
+    def _write_line(self, cmd_line):
+        return self.telnet.write(cmd_line.encode("ascii") + b"\n")
+
+    def send_show_command(self, show):
+        self._write_line(show)
+        output = self.telnet.read_until(b"#", timeout=5).decode("utf-8")
+        return output
+
+
+
+if __name__ == "__main__":
+    r1_params = {
+    'ip': '192.168.100.1',
+    'username': 'cisco',
+    'password': 'cisco',
+    'secret': 'cisco'}
+    commands = ["sh ip int br", "sh arp"]
+    r1 = CiscoTelnet(**r1_params)
+    for cmd in commands:
+        print(r1.send_show_command(cmd))

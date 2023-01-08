@@ -39,3 +39,9 @@ interface Ethernet0/3
 ...
 
 """
+from sys import argv
+text=argv[1]
+with open(text) as f:
+    for line in f:
+        if line[0] != '!' and not 'duplex' in line and not 'alias' in line and not 'configuration' in line:
+            print(line.rstrip())

@@ -38,6 +38,16 @@ switchport nonegotiate
 spanning-tree portfast
 spanning-tree bpduguard enable
 
+
+template={"access":access_template,"trunk":trunk_template}
+mode=input("Enter mode is (access|trunk): ")
+interface=input("Enter inerface: ")
+vlan=input("Enter vlans: ")
+print("Interface "+interface)
+print("\n".join(template[mode]).format(vlan))
+
+
+
 Пример выполнения скрипта, при выборе режима trunk:
 $ python task_5_3.py
 Введите режим работы интерфейса (access/trunk): trunk
@@ -63,9 +73,15 @@ trunk_template = [
     "switchport mode trunk",
     "switchport trunk allowed vlan {}",
 ]
-template={"access":access_template,"trunk":trunk_template}
-mode=input("Enter mode is (access|trunk): ")
-interface=input("Enter inerface: ")
-vlan=input("Enter vlans: ")
-print("Interface "+interface)
-print("\n".join(template[mode]).format(vlan))
+
+mode={"access":access_template, "trunk":trunk_template}
+
+template=input('Enter mode switchport (access or trunk):')
+interface=input('Enter type and number of interface:')
+vlans=input('Enter number vlan(s):')
+
+
+print('interface ' + interface)
+print('\n'.join(mode[template]).format(vlans))
+
+

@@ -41,3 +41,32 @@ bin_ip = "00001010000000010000000111000011"
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 
 """
+prefix=input('Enter ip address and prefix in format x.x.x.x/xx:\n')
+ip,mask=prefix.split('/')
+bin_ip='{:08b}'.format(int(ip.split('.')[0]))+'{:08b}'.format(int(ip.split('.')[1]))+'{:08b}'.format(int(ip.split('.')[2]))+'{:08b}'.format(int(ip.split('.')[3]))
+bin_mask=int(mask)*'1'+(32-int(mask))*'0'
+bin_net=bin_ip[:int(mask)]+(32-int(mask))*'0'
+
+octnet1=int(bin_net[0:8],2)
+octnet2=int(bin_net[8:16],2)
+octnet3=int(bin_net[16:24],2)
+octnet4=int(bin_net[24:32],2)
+
+oct1mask=int(bin_mask[0:8],2)
+oct2mask=int(bin_mask[8:16],2)
+oct3mask=int(bin_mask[16:24],2)
+oct4mask=int(bin_mask[24:32],2)
+
+out_net="""
+Network:
+{0:8} {1:8} {2:8} {3:8}
+{0:08b} {1:08b} {2:08b} {3:08b}
+"""
+out_mask="""
+Mask:
+/{4}
+{0:8} {1:8} {2:8} {3:8}
+{0:08b} {1:08b} {2:08b} {3:08b}
+"""
+print(out_net.format(int(octnet1),int(octnet2),int(octnet3),int(octnet4)))
+print(out_mask.format(oct1mask, oct2mask, oct3mask, oct4mask, mask))
