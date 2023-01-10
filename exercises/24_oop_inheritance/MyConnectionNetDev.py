@@ -125,28 +125,28 @@ class ConnectionNetEngi():
 
 if __name__ == "__main__":
     devices_params = {
-        'cis01abk': {
+        'pm-swc01hq': {
             'device_type': 'cisco_ios',
             'ip': '192.168.100.1',
-            'host': 'cis01abk',
+            'host': 'pm-swc02hq',
             'secret': 'cisco'},
-    'cis02abk':
+    'pm-swc02hq':
             {'device_type': 'cisco_ios',
             'ip': '192.168.100.2',
-            'host': 'cis02abk',
+            'host': 'pm-swc02hq',
             'secret': 'cisco'},
-    'cisl03reb':
+    'l-swc03kp':
             {'device_type': 'cisco_ios',
             'ip': '192.168.100.3',
-            'host': 'cisl03reb',
+            'host': 'l-swc03kp',
             'secret': 'cisco'},
-    'cisl02ss':
+    'l-swc02ss':
             {'device_type': 'cisco_ios',
             'ip': '192.168.100.2',
-            'host': 'cisl02ss',
+            'host': 'l-swc02ss',
             'secret': 'cisco'},
-    'cisn01eb':
+    'ne-swc01abk':
             {'device_type': 'cisco_ios',
             'ip': '192.168.100.1',
-            'host': 'cisn01eb',
+            'host': 'ne-swc01abk',
             'secret': 'cisco'}}
