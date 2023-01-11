@@ -157,6 +157,7 @@ class ConnectionNetEngi:
         logging.info(start_msg.format(datetime.now().time(), ip))
         try:
             with ConnectHandler(**device) as ssh:
+                ssh.enable()
                 hostname = ssh.find_prompt()
                 command = f"{cmd_copy}{hostname.replace('#','')}-config_{str(date.today()).replace('-','')}"
                 """
@@ -231,13 +232,13 @@ class ConnectionNetEngi:
         limit = int(limit)
         with ThreadPoolExecutor(max_workers=limit) as executor:
             future_ssh = [
-                executor.submit(self, send_wr_cfg_scp, device, cmd_copy) for device in devices
+                executor.submit(self.copy_config_scp_cisdev, device, cmd_copy) for device in devices
             ]
             result_list = [
                 future.result() for future in as_completed(future_ssh)
             ]
 
-        return result
+        return result_list
 
 
 if __name__ == "__main__":
