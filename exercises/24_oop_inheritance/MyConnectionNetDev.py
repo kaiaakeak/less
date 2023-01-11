@@ -73,14 +73,25 @@ class ConnectionNetEngi:
             )
 
     def send_commands(self, device, show=None, config=None, ignore_err=False, *args, **kwargs):
-        """Function for send commands (config or show).
-        Return the result (type=str) of executing commands
+        """Sends commands (config or show).
 
-        Arguments:
-        * show          - view mode command(s)
-        * config        - configuration mode command(s)
-        *args - variable length arguments
-        **kwargs - variable length keyword arguments
+        Parameters
+        ----------
+         show : str or list
+            view mode command(s).
+        config : str or list
+            configuration mode command(s).
+        ignore_err : bool (True or False)
+            Flag affects ignoring errors in device output.
+        *args : list
+            The same *args that you might provide to the netmiko.ssh_dispatcher.ConnectHandler.
+        **kwargs : Dict
+            The same *kwargs that you might provide to the netmiko.ssh_dispatcher.ConnectHandler.
+
+        Returns
+        ----------
+        result : str
+            The result of executing commands
         """
         start_msg = '===> {} Connection: {}'
         recevied_msg = '<=== {} Received:    {}'
@@ -124,23 +135,32 @@ class ConnectionNetEngi:
             print(f"{'=' * 50}\n\n'{err_netmiko}'")
 
     def send_commands_to_devices(self, devices, filename_dst, *, show=None, config=None, limit=3):
-        """Sends commands(config or show) to multiple devices through ThreadPoolExecutor
-        Arguments:
-        * devices       - list of dictionaries containing device parameters;
-        * filename_dst  - name of the file to save the result
-        * show          - view mode command(s)
-        * config        - configuration mode command(s)
-        * limit         - number of threads
+        """Sends commands(config or show) to multiple devices through concurrent.futures.ThreadPoolExecutor
 
-        Returns the result as a list of execution commands for multiple devices
+        Parameters
+        ----------
+        devices : list
+            List of dictionaries containing device parameters;
+        filename_dst : str
+            Name of the file to save the result
+        show : str or list
+            view mode command(s).
+        config : str or list
+            configuration mode command(s).
+        limit : int
+            number of threads.
+
+        Returns
+        ----------
+        result : list
+            The result as a list of execution commands for multiple devices
         """
-        result_list = list()
         limit = int(limit)
         with ThreadPoolExecutor(max_workers=limit) as executor:
             future_ssh = [
                 executor.submit(self.send_commands, device, show=show, config=config) for device in devices
             ]
-            result_list=[
+            result_list = [
                 future.result() for future in as_completed(future_ssh)
             ]
 
@@ -157,7 +177,7 @@ if __name__ == "__main__":
         'pm-swc01hq': {
             'device_type': 'cisco_ios',
             'ip': '192.168.100.1',
-            'host': 'pm-swc02hq',
+            'host': 'pm-swc01hq',
             'secret': 'cisco'},
         'pm-swc02hq':
             {'device_type': 'cisco_ios',
