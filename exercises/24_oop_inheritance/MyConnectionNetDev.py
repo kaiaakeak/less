@@ -137,7 +137,7 @@ class ConnectionNetEngi:
             print(f"{'=' * 50}\n\n'{err_netmiko}'")
 
     def copy_config_scp_cisdev(self, device, cmd_copy):
-        """Sends a command to save the device configuration (ru or startup) to a remote server via SCP
+        """Sends a command to save the cisco IOS device configuration (ru or startup) to a remote server via SCP
 
         Parameters
         ----------
@@ -176,7 +176,7 @@ class ConnectionNetEngi:
             print('='*30, '\n', err)
 
     def send_commands_to_devices(self, devices, filename_dst, *, show=None, config=None, limit=3):
-        """Sends commands(config or show) to multiple devices through concurrent.futures.ThreadPoolExecutor
+        """Send commands(config or show) to multiple devices through concurrent.futures.ThreadPoolExecutor
 
         Parameters
         ----------
@@ -212,8 +212,8 @@ class ConnectionNetEngi:
 
         return result_list
 
-    def copy_config_scp_cis_multidevices(self, devices, cmd_copy, limit=3):
-        """Sends a command to save the multiple devices configuration (ru or startup) to a remote server via SCP
+    def copy_cfgs_to_scp(self, devices, cmd_copy, limit=3):
+        """Send a command to save the multiple cisco IOS devices configuration (ru or startup) to a remote server via SCP
 
         Parameters
         ----------
