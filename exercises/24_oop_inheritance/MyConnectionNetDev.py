@@ -246,7 +246,7 @@ if __name__ == "__main__":
         'pm-swc01hq': {
             'device_type': 'cisco_ios',
             'ip': '192.168.100.1',
-            'host': 'pm-swc02hq',
+            'host': 'pm-swc01hq',
             'secret': 'cisco'},
         'pm-swc02hq':
             {'device_type': 'cisco_ios',
