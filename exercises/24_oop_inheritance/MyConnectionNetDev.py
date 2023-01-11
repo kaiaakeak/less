@@ -4,7 +4,7 @@ from netmiko import (
     NetmikoAuthenticationException,
 )
 import logging
-from datetime import datetime
+from datetime import datetime, date
 import re
 import getpass
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -77,7 +77,9 @@ class ConnectionNetEngi:
 
         Parameters
         ----------
-         show : str or list
+        device : dict
+            Dictionaries containing device parameters.
+        show : str or list
             view mode command(s).
         config : str or list
             configuration mode command(s).
@@ -134,8 +136,46 @@ class ConnectionNetEngi:
         except (NetmikoTimeoutException, NetmikoAuthenticationException) as err_netmiko:
             print(f"{'=' * 50}\n\n'{err_netmiko}'")
 
+    def copy_config_scp_cisdev(self, device, cmd_copy):
+        """Sends a command to save the device configuration (ru or startup) to a remote server via SCP
+
+        Parameters
+        ----------
+        device : dict
+            List of dictionaries containing device parameters.
+        cmd_copy : str
+            Command to save the device configuration (ru or startup) to a remote server via SCP.
+
+        Returns
+        ----------
+        result : str
+            The result as a string of execution command
+        """
+        start_msg = '===> {} Connection: {}'
+        recevied_msg = '<=== {} Received:    {}'
+        ip = device.get('host')
+        logging.info(start_msg.format(datetime.now().time(), ip))
+        try:
+            with ConnectHandler(**device) as ssh:
+                hostname = ssh.find_prompt()
+                command = f"{cmd_copy}{hostname.replace('#','')}-config_{str(date.today()).replace('-','')}"
+                """
+                cmd_copy - copy ru scp://fw_saver:fwsave_ftp@10.252.246.27/config_SCP_ONLY/cisco/lpu/
+                ip - pm-swc01hq
+                copy ru scp://fw_saver:fwsave_ftp@10.252.246.27/config_SCP_ONLY/cisco/lpu/pm-swc01hq-config_20230111
+                """
+                result = ssh.send_command_timing(command, strip_prompt=False, strip_command=False)
+                result += ssh.send_command_timing("\n", strip_prompt=False, strip_command=False)
+                result += ssh.send_command_timing("\n", strip_prompt=False, strip_command=False)
+                result = f"{hostname}\n{result}\n"
+                logging.info(recevied_msg.format(datetime.now().time(), ip))
+
+            return result
+        except (NetmikoTimeoutException, NetmikoAuthenticationException) as err:
+            print('='*30, '\n', err)
+
     def send_commands_to_devices(self, devices, filename_dst, *, show=None, config=None, limit=3):
-        """Sends commands(config or show) to multiple devices through concurrent.futures.ThreadPoolExecutor
+        """Sends commands(config or show) to multiple devices using concurrent.futures.ThreadPoolExecutor
 
         Parameters
         ----------
@@ -177,7 +217,7 @@ if __name__ == "__main__":
         'pm-swc01hq': {
             'device_type': 'cisco_ios',
             'ip': '192.168.100.1',
-            'host': 'pm-swc01hq',
+            'host': 'pm-swc02hq',
             'secret': 'cisco'},
         'pm-swc02hq':
             {'device_type': 'cisco_ios',
