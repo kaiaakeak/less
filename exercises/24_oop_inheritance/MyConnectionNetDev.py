@@ -142,7 +142,7 @@ class ConnectionNetEngi:
         Parameters
         ----------
         device : dict
-            List of dictionaries containing device parameters.
+            Dictionary containing device parameters.
         cmd_copy : str
             Command to save the device configuration (ru or startup) to a remote server via SCP.
 
@@ -175,7 +175,7 @@ class ConnectionNetEngi:
             print('='*30, '\n', err)
 
     def send_commands_to_devices(self, devices, filename_dst, *, show=None, config=None, limit=3):
-        """Sends commands(config or show) to multiple devices using concurrent.futures.ThreadPoolExecutor
+        """Sends commands(config or show) to multiple devices through concurrent.futures.ThreadPoolExecutor
 
         Parameters
         ----------
@@ -210,6 +210,34 @@ class ConnectionNetEngi:
                     dst.write(line)
 
         return result_list
+
+    def copy_config_scp_cis_multidevices(self, devices, cmd_copy, limit=3):
+        """Sends a command to save the multiple devices configuration (ru or startup) to a remote server via SCP
+
+        Parameters
+        ----------
+        devices : list
+            List of dictionaries containing device parameters.
+        cmd_copy : str
+            Command to save the device configuration (ru or startup) to a remote server via SCP.
+        limit : int
+            number of threads.
+
+        Returns
+        ----------
+        result : list
+            The result as a list of execution commands for multiple devices
+        """
+        limit = int(limit)
+        with ThreadPoolExecutor(max_workers=limit) as executor:
+            future_ssh = [
+                executor.submit(self, send_wr_cfg_scp, device, cmd_copy) for device in devices
+            ]
+            result_list = [
+                future.result() for future in as_completed(future_ssh)
+            ]
+
+        return result
 
 
 if __name__ == "__main__":
